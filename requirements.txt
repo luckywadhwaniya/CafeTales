@@ -1,0 +1,19 @@
+# CafeTales Project Requirements
+
+PHP >= 7.4
+MySQL >= 5.7
+Apache Server
+
+# Recommended Environment
+XAMPP / WAMP / LAMP
+
+# PHP Extensions
+mysqli
+json
+mbstring
+session
+
+# Frontend
+HTML5
+CSS3
+JavaScript

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CafeTales — Offers</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="global.css">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center gap-2 fw-bold" href="index.html">
+      <img
+        src="https://cdn-icons-png.flaticon.com/512/924/924514.png"
+        alt="CafeTales Logo"
+        class="navbar-logo"
+      >
+      <span>CafeTales</span>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="nav" class="collapse navbar-collapse">
+      <ul class="navbar-nav ms-auto gap-2">
+        <li class="nav-item"><a data-nav class="nav-link" href="index.html">Home</a></li>
+        <li class="nav-item"><a data-nav class="nav-link" href="menu.html">Menu</a></li>
+        <li class="nav-item"><a data-nav class="nav-link" href="reservation.html">Reserve</a></li>
+        <li class="nav-item"><a data-nav class="nav-link active" href="offers.html">Offers</a></li>
+        <li class="nav-item"><a data-nav class="nav-link" href="gallery.html">Gallery</a></li>
+        <li class="nav-item"><a data-nav class="nav-link" href="events.html">Events</a></li>
+        <li class="nav-item"><a data-nav class="nav-link" href="about.html">About</a></li>
+        <li class="nav-item"><a data-nav class="nav-link" href="contact.html">Contact</a></li>
+        <li class="nav-item"><a data-nav class="nav-link" href="login.html">Login</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<main class="container-narrow section">
+  <h1 class="page-title">Offers & Combos</h1>
+  <p class="small-muted">Limited-time deals for your cravings.</p>
+
+  <div class="grid-3 mt-3">
+    <div class="glass overflow-hidden card-hover">
+      <img class="img-cover" src="https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&w=1200&q=70" alt="Offer">
+      <div class="p-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="fw-bold">Coffee + Brownie</div>
+          <span class="badge badge-soft rounded-pill">₹249</span>
+        </div>
+        <div class="small-muted">Perfect evening snack combo.</div>
+      </div>
+    </div>
+
+    <div class="glass overflow-hidden card-hover">
+      <img class="img-cover" src="https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=1200&q=70" alt="Offer">
+      <div class="p-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="fw-bold">2 Cold Brews</div>
+          <span class="badge badge-soft rounded-pill">₹299</span>
+        </div>
+        <div class="small-muted">Bring a friend.</div>
+      </div>
+    </div>
+
+    <div class="glass overflow-hidden card-hover">
+      <img class="img-cover" src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=70" alt="Offer">
+      <div class="p-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="fw-bold">Weekend Brunch</div>
+          <span class="badge badge-soft rounded-pill">Flat 10% off</span>
+        </div>
+        <div class="small-muted">Sat-Sun (11AM–2PM)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <a class="ct-btn" href="reservation.html">Reserve for Offer</a>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container-narrow">© <span id="year"></span> CafeTales</div>
+</footer>
+
+<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="global.js"></script>
+</body>
+</html>

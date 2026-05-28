@@ -1,0 +1,32 @@
+# System Files
+.DS_Store
+Thumbs.db
+
+# IDE Files
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Environment Variables
+.env
+
+# Node Modules
+node_modules/
+
+# Uploads
+uploads/
+
+# Cache Files
+*.cache
+
+# Temporary Files
+*.tmp
+
+# Database Backup Files
+*.bak
+*.sql.bak
+
+# OS Generated Files
+desktop.ini

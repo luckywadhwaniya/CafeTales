@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>CafeTales — Events</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Your global CSS (keep this if you already have it) -->
+  <link rel="stylesheet" href="global.css">
+
+  <style>
+    /* ==============================
+       MICRO-INTERACTIONS (B)
+    ============================== */
+
+    /* Card hover */
+    .card-hover {
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    .card-hover:hover {
+      transform: translateY(-6px) scale(1.01);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, .45);
+    }
+
+    /* Button hover */
+    .btn-soft {
+      border: 1px solid rgba(255, 255, 255, .20);
+      background: rgba(255, 255, 255, .08);
+      color: #fff;
+      border-radius: 999px;
+      padding: 8px 14px;
+      transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+
+    .btn-soft:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, .35);
+      background: rgba(255, 255, 255, .14);
+    }
+
+    /* ==============================
+       REVEAL ANIMATION (Scroll)
+    ============================== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+
+    .reveal.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ==============================
+       EVENTS UI
+    ============================== */
+    .event-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    @media (max-width: 992px) {
+      .event-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 600px) {
+      .event-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .event-card {
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, .12);
+      background: rgba(255, 255, 255, .06);
+    }
+
+    .event-img {
+      width: 100%;
+      height: 170px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .event-body {
+      padding: 14px;
+    }
+
+    .event-title {
+      margin: 0;
+      font-weight: 750;
+      font-size: 18px;
+    }
+
+    .event-meta {
+      font-size: 13px;
+      color: rgba(255, 255, 255, .75);
+      margin-top: 6px;
+    }
+
+    .chip {
+      display: inline-block;
+      padding: 4px 10px;
+      font-size: 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, .20);
+      margin-right: 6px;
+      margin-top: 8px;
+      color: rgba(255, 255, 255, .88);
+      background: rgba(255, 255, 255, .06);
+      white-space: nowrap;
+    }
+
+    .chip-ok {
+      border-color: rgba(120, 255, 170, .25);
+      color: rgba(200, 255, 220, .95);
+    }
+
+    .chip-full {
+      border-color: rgba(255, 120, 120, .25);
+      color: rgba(255, 210, 210, .95);
+    }
+
+    .chip-reg {
+      border-color: rgba(120, 180, 255, .25);
+      color: rgba(210, 230, 255, .95);
+    }
+
+    /* Modal theme */
+    .modal-content {
+      background: #121417;
+      color: rgba(255, 255, 255, .92);
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, .12);
+    }
+
+    .modal-header,
+    .modal-footer {
+      border-color: rgba(255, 255, 255, .10);
+    }
+
+    .form-control {
+      background: rgba(255, 255, 255, .06);
+      border: 1px solid rgba(255, 255, 255, .14);
+      color: rgba(255, 255, 255, .92);
+    }
+
+    .form-control::placeholder {
+      color: rgba(255, 255, 255, .55);
+    }
+
+    .msg-ok {
+      color: rgba(200, 255, 220, .95);
+    }
+
+    .msg-bad {
+      color: rgba(255, 200, 200, .95);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ================= NAVBAR ================= -->
+ <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center gap-2 fw-bold" href="index.html">
+      <img
+        src="https://cdn-icons-png.flaticon.com/512/924/924514.png"
+        alt="CafeTales Logo"
+        class="navbar-logo"
+      >
+      <span>CafeTales</span>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="nav" class="collapse navbar-collapse">
+      <ul class="navbar-nav ms-auto gap-2">
+        <li class="nav-item"><a data-nav class="nav-link" href="index.html">Home</a></li>
+        <li class="nav-item"><a data-nav class="nav-link" href="menu.html">Menu</a></li>
+        <li class="nav-item"><a data-nav class="nav-link" href="reservation.html">Reserve</a></li>
+        <li class="nav-item"><a data-nav class="nav-link" href="offers.html">Offers</a></li>
+        <li class="nav-item"><a data-nav class="nav-link" href="gallery.html">Gallery</a></li>
+        <li class="nav-item"><a data-nav class="nav-link active" href="events.html">Events</a></li>
+        <li class="nav-item"><a data-nav class="nav-link" href="about.html">About</a></li>
+        <li class="nav-item"><a data-nav class="nav-link" href="contact.html">Contact</a></li>
+        <li class="nav-item"><a data-nav class="nav-link" href="login.html">Login</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  <!-- ================= MAIN ================= -->
+  <main class="container-narrow section">
+
+    <!-- ✅ You can add reveal on top section too -->
+    <div class="glass p-4 reveal">
+      <h1 class="page-title mb-1">Upcoming Events</h1>
+      <p class="small-muted mb-0">Register your seat instantly. Seats are limited.</p>
+    </div>
+
+    <div class="mt-4 reveal">
+      <input id="search" class="form-control" placeholder="Search events (open mic, games, workshop)">
+    </div>
+
+    <!-- ✅ Events will render here -->
+    <div id="eventGrid" class="event-grid mt-4"></div>
+  </main>
+
+  <!-- ================= MODAL ================= -->
+  <div class="modal fade" id="eventModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <div>
+            <h5 id="mTitle" class="modal-title mb-1"></h5>
+            <div class="small-muted" id="mTag"></div>
+
+            <div class="mt-2 d-flex flex-wrap gap-2">
+              <span class="chip" id="mNext">Next: —</span>
+              <span class="chip" id="mSeats">Seats: —</span>
+              <span class="chip" id="mCountdown">Starts in: —</span>
+            </div>
+          </div>
+
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body">
+          <img id="mImg" class="w-100 rounded-4 mb-3"
+            style="height:220px;object-fit:cover;border:1px solid rgba(255,255,255,.10);" alt="Event">
+
+          <p id="mDesc" class="small-muted mb-3"></p>
+
+          <div class="glass p-3">
+            <div class="fw-semibold mb-2">Confirm Your Seat</div>
+            <input id="mEmail" class="form-control" placeholder="Enter your email">
+            <div id="mMsg" class="small-muted mt-2"></div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button id="mCancel" class="btn-soft" type="button">Cancel Registration</button>
+          <button id="mRegister" class="btn-soft" type="button">Register & Confirm</button>
+          <button class="btn-soft" type="button" data-bs-dismiss="modal">Close</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container-narrow">© <span id="year"></span> CafeTales</div>
+  </footer>
+
+  <!-- ✅ IMPORTANT: Bootstrap JS FIRST -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    /* ==============================
+       1) REVEAL: where to add .reveal?
+       - You add class="reveal" on any section/card you want animated.
+       - This JS automatically adds .show when it comes in view.
+    ============================== */
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("show");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+
+    /* ==============================
+       2) EVENTS DATA + SEATS
+    ============================== */
+    const REG_KEY = "cafetales_event_regs_final";
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    function loadRegs() {
+      try { return JSON.parse(localStorage.getItem(REG_KEY)) || []; }
+      catch { return []; }
+    }
+    function saveRegs(list) {
+      localStorage.setItem(REG_KEY, JSON.stringify(list));
+    }
+
+    function nextWeekday(weekdayIndex, hour, minute) {
+      const now = new Date();
+      const dt = new Date(now);
+      dt.setHours(hour, minute, 0, 0);
+      const diff = (weekdayIndex - dt.getDay() + 7) % 7;
+      if (diff === 0 && dt <= now) dt.setDate(dt.getDate() + 7);
+      else dt.setDate(dt.getDate() + diff);
+      return dt;
+    }
+
+    function formatDT(dt) {
+      return dt.toLocaleString(undefined, {
+        day: "2-digit", month: "short", year: "numeric",
+        hour: "2-digit", minute: "2-digit"
+      });
+    }
+
+    function msToCountdown(ms) {
+      if (ms <= 0) return "Started";
+      const sec = Math.floor(ms / 1000);
+      const d = Math.floor(sec / 86400);
+      const h = Math.floor((sec % 86400) / 3600);
+      const m = Math.floor((sec % 3600) / 60);
+      return `${d}d ${h}h ${m}m`;
+    }
+
+    const EVENTS = [
+      {
+        id: "E1",
+        title: "Open Mic Night",
+        tag: "Open Mic • Community",
+        img: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=1200&q=70",
+        desc: "Sing, poetry, guitar, stand-up — friendly crowd and warm vibes.",
+        capacity: 20,
+        nextStart: () => nextWeekday(5, 19, 30) // Friday 7:30 PM
+      },
+      {
+        id: "E2",
+        title: "Board Games Evening",
+        tag: "Games • Chill",
+        img: "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=70",
+        desc: "Uno, Chess, Ludo, Jenga — join a table and make new friends.",
+        capacity: 24,
+        nextStart: () => nextWeekday(3, 18, 0) // Wednesday 6:00 PM
+      },
+      {
+        id: "E3",
+        title: "Latte Art Workshop",
+        tag: "Workshop • Coffee",
+        img: "data:image/jpeg;base64,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",
+        desc: "Learn heart, rosetta, tulip patterns with hands-on practice.",
+        capacity: 15,
+        nextStart: () => nextWeekday(0, 16, 0) // Sunday 4:00 PM (simple)
+      }
+    ];
+
+    function seatsLeft(eventId) {
+      const ev = EVENTS.find(e => e.id === eventId);
+      const used = loadRegs().filter(r => r.eventId === eventId).length;
+      return Math.max(0, ev.capacity - used);
+    }
+
+    function isRegistered(eventId, email) {
+      const e = (email || "").trim().toLowerCase();
+      return loadRegs().some(r => r.eventId === eventId && r.email.toLowerCase() === e);
+    }
+
+    /* ==============================
+       3) RENDER EVENTS (with reveal)
+    ============================== */
+    const grid = document.getElementById("eventGrid");
+    const search = document.getElementById("search");
+
+    function render() {
+      const q = (search.value || "").trim().toLowerCase();
+      grid.innerHTML = "";
+
+      const list = EVENTS
+        .map(ev => ({ ev, start: ev.nextStart() }))
+        .sort((a, b) => a.start - b.start)
+        .filter(x => x.ev.title.toLowerCase().includes(q) || x.ev.tag.toLowerCase().includes(q));
+
+      if (list.length === 0) {
+        grid.innerHTML = `<div class="small-muted">No events found.</div>`;
+        return;
+      }
+
+      list.forEach(({ ev, start }) => {
+        const left = seatsLeft(ev.id);
+        const cd = msToCountdown(start.getTime() - Date.now());
+
+        const seatChip = left <= 0
+          ? `<span class="chip chip-full">FULL</span>`
+          : `<span class="chip chip-ok">${left}/${ev.capacity} seats left</span>`;
+
+        const card = document.createElement("div");
+        card.className = "event-card card-hover reveal";   // ✅ reveal added here
+        card.innerHTML = `
+        <img class="event-img" src="${ev.img}" alt="${ev.title}">
+        <div class="event-body">
+          <h5 class="event-title">${ev.title}</h5>
+          <div class="event-meta">${formatDT(start)} • Starts in: ${cd}</div>
+
+          <div>
+            <span class="chip">${ev.tag}</span>
+            ${seatChip}
+          </div>
+
+          <div class="mt-3">
+            <button class="btn-soft" data-open="${ev.id}">View & Register</button>
+          </div>
+        </div>
+      `;
+        grid.appendChild(card);
+
+        // ✅ IMPORTANT: Newly created reveal elements must be observed too
+        observer.observe(card);
+      });
+    }
+
+    search.addEventListener("input", render);
+
+    /* ==============================
+       4) MODAL REGISTER
+    ============================== */
+    const modal = new bootstrap.Modal(document.getElementById("eventModal"));
+    const mTitle = document.getElementById("mTitle");
+    const mTag = document.getElementById("mTag");
+    const mImg = document.getElementById("mImg");
+    const mDesc = document.getElementById("mDesc");
+    const mNext = document.getElementById("mNext");
+    const mSeats = document.getElementById("mSeats");
+    const mCountdown = document.getElementById("mCountdown");
+
+    const mEmail = document.getElementById("mEmail");
+    const mMsg = document.getElementById("mMsg");
+    const mRegister = document.getElementById("mRegister");
+    const mCancel = document.getElementById("mCancel");
+
+    let activeId = null;
+    let countdownTimer = null;
+
+    function openModal(eventId) {
+      const ev = EVENTS.find(e => e.id === eventId);
+      if (!ev) return;
+
+      activeId = eventId;
+      const start = ev.nextStart();
+      const left = seatsLeft(eventId);
+
+      mTitle.textContent = ev.title;
+      mTag.textContent = ev.tag;
+      mImg.src = ev.img;
+      mDesc.textContent = ev.desc;
+
+      mNext.textContent = `Next: ${formatDT(start)}`;
+      mSeats.textContent = left <= 0 ? `Seats: FULL` : `Seats: ${left}/${ev.capacity}`;
+      mMsg.textContent = "";
+
+      function tick() {
+        mCountdown.textContent = `Starts in: ${msToCountdown(start.getTime() - Date.now())}`;
+      }
+      clearInterval(countdownTimer);
+      tick();
+      countdownTimer = setInterval(tick, 1000);
+
+      // button state
+      mRegister.disabled = (left <= 0);
+      modal.show();
+    }
+
+    grid.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-open]");
+      if (!btn) return;
+      openModal(btn.dataset.open);
+    });
+
+    mRegister.addEventListener("click", () => {
+      const email = (mEmail.value || "").trim();
+      if (!emailRegex.test(email)) {
+        mMsg.innerHTML = `<span class="msg-bad">Enter a valid email.</span>`;
+        return;
+      }
+
+      if (isRegistered(activeId, email)) {
+        mMsg.innerHTML = `<span class="msg-bad">Already registered with this email.</span>`;
+        return;
+      }
+
+      const ev = EVENTS.find(e => e.id === activeId);
+      const left = seatsLeft(activeId);
+      if (left <= 0) {
+        mMsg.innerHTML = `<span class="msg-bad">Event is FULL.</span>`;
+        return;
+      }
+
+      const regs = loadRegs();
+      regs.unshift({ id: crypto.randomUUID(), eventId: activeId, email, at: new Date().toISOString() });
+      saveRegs(regs);
+
+      mMsg.innerHTML = `<span class="msg-ok">Seat confirmed ✅</span>`;
+
+      // update seats immediately
+      const newLeft = seatsLeft(activeId);
+      mSeats.textContent = newLeft <= 0 ? `Seats: FULL` : `Seats: ${newLeft}/${ev.capacity}`;
+      mRegister.disabled = true;
+
+      render();
+    });
+
+    mCancel.addEventListener("click", () => {
+      const email = (mEmail.value || "").trim();
+      if (!emailRegex.test(email)) {
+        mMsg.innerHTML = `<span class="msg-bad">Enter your email to cancel.</span>`;
+        return;
+      }
+
+      const before = loadRegs();
+      const after = before.filter(r => !(r.eventId === activeId && r.email.toLowerCase() === email.toLowerCase()));
+      saveRegs(after);
+
+      if (after.length === before.length) {
+        mMsg.innerHTML = `<span class="msg-bad">No registration found for this email.</span>`;
+        return;
+      }
+
+      mMsg.innerHTML = `<span class="msg-ok">Registration cancelled ✅</span>`;
+      mRegister.disabled = false;
+      render();
+    });
+
+    document.getElementById("eventModal").addEventListener("hidden.bs.modal", () => {
+      clearInterval(countdownTimer);
+      countdownTimer = null;
+      activeId = null;
+    });
+
+    // Init
+    render();
+  </script>
+
+  <!-- Keep if you want (optional) -->
+  <script src="global.js"></script>
+</body>
+
+</html>

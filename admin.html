@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CafeTales — Admin Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="global.css">
+  <style>
+    /* Admin Styling */
+    .admin-sidebar { background: rgba(0,0,0,0.8); border-right: 1px solid rgba(255,255,255,0.1); min-height: 100vh; backdrop-filter: blur(10px); }
+    .nav-link { color: rgba(255,255,255,0.7); margin-bottom: 5px; cursor: pointer; }
+    .nav-link:hover, .nav-link.active { color: #ffb703 !important; background: rgba(255,255,255,0.1); border-radius: 5px; }
+    
+    /* Order Cards */
+    .order-card { 
+        background: #212529; 
+        border: 1px solid #343a40; 
+        border-left: 5px solid #ffb703; 
+        border-radius: 8px; 
+        margin-bottom: 15px; 
+        position: relative;
+        height: 100%; 
+        display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .order-card.paid { border-left-color: #198754; } 
+    .order-card.pending { border-left-color: #dc3545; }
+    .table-title { font-size: 1.25rem; font-weight: 700; color: #fff; } 
+    
+    /* Scrollable Item Box */
+    .item-box { 
+        background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); 
+        padding: 10px; border-radius: 5px; font-size: 0.9rem; color: #adb5bd; 
+        min-height: 60px; max-height: 150px; overflow-y: auto; margin-bottom: 10px; 
+    }
+    .item-box::-webkit-scrollbar { width: 5px; }
+    .item-box::-webkit-scrollbar-track { background: #333; }
+    .item-box::-webkit-scrollbar-thumb { background: #555; border-radius: 5px; }
+
+    /* Tables */
+    .table-dark { background: transparent; }
+    .table-dark td, .table-dark th { background: rgba(0,0,0,0.3); border-bottom: 1px solid #495057; vertical-align: middle; }
+    .img-thumb { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; }
+  </style>
+</head>
+<body class="bg-dark text-white">
+
+<div class="d-flex">
+  <div class="admin-sidebar d-flex flex-column flex-shrink-0 p-3" style="width: 280px;">
+    <a href="#" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-warning text-decoration-none">
+      <span class="fs-4 fw-bold">🛡️ CT Admin</span>
+    </a>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+      <li class="nav-item"><a class="nav-link active" onclick="showSection('dashboard', this)">📊 Dashboard</a></li>
+      <li><a class="nav-link" onclick="showSection('orders', this)">🔔 Live Orders</a></li>
+      <li><a class="nav-link" onclick="showSection('menu', this)">☕ Manage Menu</a></li>
+      <li><a class="nav-link" onclick="showSection('reservations', this)">📅 Reservations</a></li>
+    </ul>
+    <hr>
+    <button class="btn btn-outline-danger w-100" id="adminLogout">Sign out</button>
+  </div>
+
+  <main class="flex-grow-1 p-4" style="height:100vh; overflow-y:auto;">
+    
+    <div id="sect-dashboard" class="animate-fade">
+      <h2 class="mb-4 text-warning fw-bold">Overview</h2>
+      <div class="row g-4">
+        <div class="col-md-4"><div class="stat-card p-4 rounded bg-dark border border-secondary text-center"><h3 class="text-warning" id="stat-pending">0</h3><div class="text-light">Pending Reservations</div></div></div>
+        <div class="col-md-4"><div class="stat-card p-4 rounded bg-dark border border-secondary text-center"><h3 class="text-success" id="stat-rev">₹0</h3><div class="text-light">Total Revenue</div></div></div>
+        <div class="col-md-4"><div class="stat-card p-4 rounded bg-dark border border-secondary text-center"><h3 class="text-info" id="stat-items">0</h3><div class="text-light">Active Menu Items</div></div></div>
+      </div>
+    </div>
+
+    <div id="sect-orders" class="animate-fade" style="display:none;">
+        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary pb-3">
+            <h2 class="text-warning m-0">🔔 Live Incoming Orders</h2>
+            <button class="btn btn-sm btn-outline-light" onclick="loadAdminOrders()">🔄 Refresh</button>
+        </div>
+        <div id="orders-container" class="row g-3"></div>
+    </div>
+
+    <div id="sect-menu" class="animate-fade" style="display:none;">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-warning">☕ Menu Items</h2>
+            <button class="btn btn-warning fw-bold" data-bs-toggle="modal" data-bs-target="#addItemModal">+ Add Item</button>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-dark table-hover">
+                <thead><tr class="text-secondary"><th>Image</th><th>Name</th><th>Category</th><th>Price</th><th class="text-end">Action</th></tr></thead>
+                <tbody id="menu-table-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="sect-reservations" class="animate-fade" style="display:none;">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-warning">📅 Bookings</h2>
+            <button class="btn btn-sm btn-outline-light" onclick="loadReservations()">🔄 Refresh</button>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-dark table-hover">
+                <thead><tr class="text-secondary"><th>Customer</th><th>Date & Time</th><th>Seating/Guests</th><th>Status</th><th class="text-end">Action</th></tr></thead>
+                <tbody id="res-table-body"></tbody>
+            </table>
+        </div>
+    </div>
+  </main>
+</div>
+
+<div class="modal fade" id="addItemModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark text-white border-secondary">
+      <div class="modal-header border-secondary">
+        <h5 class="modal-title">New Menu Item</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="addItemForm">
+          <label>Item Name</label>
+          <input type="text" name="name" class="form-control mb-3 bg-dark text-white border-secondary" placeholder="Item Name" required>
+          <div class="row g-2 mb-3">
+            <label for="price">Price(₹)</label>
+            <div class="col-6"><input type="number" name="price" class="form-control bg-dark text-white border-secondary" placeholder="Price (₹)" required></div>
+            <label for="categories">categories</label>
+            <div class="col-6"><select name="category_id" class="form-select bg-dark text-white border-secondary" required></select></div>
+          </div>
+
+          <label class="form-label text-white">Upload Image</label>
+          <input type="file" name="image" class="form-control mb-3 bg-dark text-white border-secondary">
+          <button class="btn btn-warning w-100 fw-bold">Save Item</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Auth Check
+  const session = JSON.parse(localStorage.getItem("cafetales_session_v3"));
+  if (!session || session.role !== "admin") window.location.href = "login.html";
+  document.getElementById("adminLogout").onclick = () => { localStorage.removeItem("cafetales_session_v3"); window.location.href = "login.html"; };
+
+  // Navigation
+  window.showSection = function(id, btn) {
+    document.querySelectorAll('main > div').forEach(d => d.style.display = 'none');
+    document.getElementById('sect-' + id).style.display = 'block';
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+    if(btn) btn.classList.add('active');
+    if(id === 'dashboard') loadStats();
+    if(id === 'orders') loadAdminOrders();
+    if(id === 'menu') { loadMenu(); loadCategories(); }
+    if(id === 'reservations') loadReservations();
+  };
+
+  // 1. Orders
+  async function loadAdminOrders() {
+      const container = document.getElementById("orders-container");
+      container.innerHTML = '<div class="text-center w-100 py-5"><div class="spinner-border text-warning"></div></div>';
+      try {
+          const res = await fetch("api.php?action=get_all_orders");
+          const orders = await res.json();
+          container.innerHTML = "";
+          if(!orders.length) { container.innerHTML = '<div class="text-muted text-center w-100 mt-5">No active orders.</div>'; return; }
+          orders.forEach(o => {
+              const isPaid = o.payment_status === 'Paid';
+              const btn = !isPaid ? `<button onclick="updatePay(${o.id})" class="btn btn-sm btn-outline-success w-100 mt-2">💵 Mark Paid</button>` : `<div class="text-success small text-center mt-2 fw-bold">✔ Settled</div>`;
+              container.innerHTML += `<div class="col-md-6 col-lg-4"><div class="order-card p-3 ${isPaid ? 'paid' : 'pending'}"><div><div class="d-flex justify-content-between align-items-center mb-2"><div class="table-title text-white">Table ${o.table_number || '?'}</div><span class="badge ${isPaid?'bg-success':'bg-danger'}">${isPaid?'PAID':'UNPAID'}</span></div><div class="text-warning fw-bold mb-1">${o.full_name}</div><div class="small text-muted mb-2">${o.payment_method}</div><div class="item-box">${o.items_summary}</div></div><div><div class="d-flex justify-content-between fw-bold text-white border-top border-secondary pt-2"><span>Total</span><span>₹${o.total_amount}</span></div>${btn}</div></div></div>`;
+          });
+      } catch(e) { console.error(e); }
+  }
+
+  // 2. Reservations (Fixed Actions)
+  async function loadReservations() {
+      const tbody = document.getElementById("res-table-body");
+      try {
+          const res = await fetch("api.php?action=get_reservations");
+          const data = await res.json();
+          tbody.innerHTML = "";
+          data.forEach(b => {
+             let badge = b.status === 'confirmed' ? 'bg-success' : (b.status==='cancelled'?'bg-danger':'bg-warning text-dark');
+             let actions = '';
+             
+             // Logic: If Pending -> Show Confirm & Cancel. If Confirmed -> Show Cancel only.
+             if(b.status === 'pending') {
+                 actions = `<button class="btn btn-sm btn-success me-1" onclick="updRes(${b.id}, 'confirmed')">✔</button>
+                            <button class="btn btn-sm btn-danger" onclick="updRes(${b.id}, 'cancelled')">✖</button>`;
+             } else if(b.status === 'confirmed') {
+                 actions = `<button class="btn btn-sm btn-outline-danger" onclick="updRes(${b.id}, 'cancelled')">Cancel</button>`;
+             } else {
+                 actions = '<span class="text-muted small">-</span>';
+             }
+
+             tbody.innerHTML += `<tr><td><strong>${b.customer_name}</strong><br><small class="text-muted">${b.customer_phone}</small></td><td>${b.reservation_date}<br><small>${b.reservation_time}</small></td><td>${b.seating_area}<br><small>${b.guests} Guests</small></td><td><span class="badge ${badge}">${b.status.toUpperCase()}</span></td><td class="text-end">${actions}</td></tr>`;
+          });
+      } catch(e) {}
+  }
+
+  // 3. Menu
+  async function loadMenu() {
+      const res = await fetch("api.php?action=get_menu");
+      const items = await res.json();
+      const tbody = document.getElementById("menu-table-body");
+      tbody.innerHTML = "";
+      items.forEach(i => {
+         const img = i.image && i.image !== 'default.jpg' ? `uploads/${i.image}` : 'https://via.placeholder.com/50';
+         tbody.innerHTML += `<tr><td><img src="${img}" class="img-thumb"></td><td>${i.name}</td><td>${i.category_name}</td><td class="text-warning">₹${i.price}</td><td class="text-end"><button class="btn btn-sm btn-outline-danger" onclick="delItem(${i.id})">Del</button></td></tr>`;
+      });
+  }
+  async function loadCategories() {
+      const res = await fetch("api.php?action=get_categories");
+      const cats = await res.json();
+      const s = document.querySelector("select[name='category_id']");
+      s.innerHTML = "";
+      cats.forEach(c => s.innerHTML += `<option value="${c.id}">${c.name}</option>`);
+  }
+  
+  // 4. Stats
+  async function loadStats() {
+      const res = await fetch("api.php?action=admin_stats");
+      const d = await res.json();
+      document.getElementById("stat-pending").innerText = d.pending;
+      document.getElementById("stat-items").innerText = d.items;
+      document.getElementById("stat-rev").innerText = "₹"+d.revenue;
+  }
+
+  // Helpers
+  async function updatePay(id) { if(confirm("Confirm Paid?")) { await postData("update_payment_status", {order_id:id, status:'Paid'}); loadAdminOrders(); } }
+  async function updRes(id, st) { if(confirm("Set "+st+"?")) { await postData("update_res_status", {id:id, status:st}); loadReservations(); loadStats(); } }
+  async function delItem(id) { if(confirm("Delete?")) { await postData("delete_item", {id:id}); loadMenu(); } }
+  async function postData(act, data) { const fd = new FormData(); fd.append("action", act); for(k in data) fd.append(k, data[k]); await fetch("api.php", {method:"POST", body:fd}); }
+
+  // Add Item Submit
+  document.getElementById("addItemForm").onsubmit = async (e) => {
+      e.preventDefault();
+      const btn = e.target.querySelector("button");
+      btn.textContent = "Saving..."; btn.disabled = true;
+      try {
+          await fetch("api.php", {method:"POST", body:new FormData(e.target)});
+          bootstrap.Modal.getInstance(document.getElementById('addItemModal')).hide();
+          e.target.reset(); loadMenu();
+      } catch(err) { console.error(err); }
+      btn.textContent = "Save Item"; btn.disabled = false;
+  };
+
+  showSection('dashboard', document.querySelector('.nav-link.active'));
+</script>
+</body>
+</html>

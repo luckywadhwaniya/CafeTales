@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CafeTales — Menu</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="global.css">
+  
+  <style>
+    /* STYLES FOR MENU & BUTTONS */
+    .filter-wrapper { position: sticky; top: 70px; z-index: 100; background: rgba(15, 17, 21, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.08); padding: 15px 0; margin-bottom: 30px; }
+    .filter-scroll { display: flex; gap: 12px; overflow-x: auto; padding: 5px 2px; scrollbar-width: none; }
+    .filter-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #ccc; padding: 8px 20px; border-radius: 50px; white-space: nowrap; cursor: pointer; transition: all 0.3s; }
+    .filter-btn.active { background: #ffb703; color: #000; font-weight: 700; }
+    
+    .menu-card { background: #1a1d24; border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; height: 100%; display: flex; flex-direction: column; padding-bottom: 20px; position: relative; overflow: hidden; transition: transform 0.3s; }
+    .menu-card:hover { transform: translateY(-5px); border-color: rgba(255, 183, 3, 0.3); }
+    .img-wrapper { height: 220px; overflow: hidden; }
+    .img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+    .card-content { padding: 20px; flex-grow: 1; padding-bottom: 60px; }
+    .item-title { font-size: 1.2rem; font-weight: 700; color: #fff; }
+    .item-price { font-size: 1.1rem; color: #ffb703; font-weight: 700; }
+
+    /* ADD BUTTONS */
+    .btn-add-container { position: absolute; bottom: 20px; right: 20px; width: 100px; height: 38px; background: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; cursor: pointer; z-index: 10; overflow: hidden; }
+    .btn-add-initial { color: #2fb344; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+    .btn-add-initial:hover { background: #f0f0f0; }
+    .btn-counter { display: flex; width: 100%; height: 100%; background: #ffb703; color: #000; }
+    .btn-counter button { width: 30px; border: none; background: transparent; font-weight: bold; font-size: 1.2rem; cursor: pointer; }
+    .btn-counter span { flex-grow: 1; display: flex; align-items: center; justify-content: center; font-size: 1rem; background: rgba(255,255,255,0.2); }
+
+    /* FLOATING CART */
+    #cart-floating-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #ffb703; padding: 12px 24px; border-radius: 50px; display: none; align-items: center; gap: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 1000; width: 90%; max-width: 400px; justify-content: space-between; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center gap-2 fw-bold" href="index.html">
+      <img
+        src="https://cdn-icons-png.flaticon.com/512/924/924514.png"
+        alt="CafeTales Logo"
+        class="navbar-logo"
+      >
+      <span>CafeTales</span>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="nav" class="collapse navbar-collapse">
+      <ul class="navbar-nav ms-auto gap-2">
+        <li class="nav-item"><a data-nav class="nav-link" href="index.html">Home</a></li>
+        <li class="nav-item"><a data-nav class="nav-link active" href="menu.html">Menu</a></li>
+        <li class="nav-item"><a data-nav class="nav-link" href="reservation.html">Reserve</a></li>
+        <li class="nav-item"><a data-nav class="nav-link" href="offers.html">Offers</a></li>
+        <li class="nav-item"><a data-nav class="nav-link" href="gallery.html">Gallery</a></li>
+        <li class="nav-item"><a data-nav class="nav-link" href="events.html">Events</a></li>
+        <li class="nav-item"><a data-nav class="nav-link" href="about.html">About</a></li>
+        <li class="nav-item"><a data-nav class="nav-link" href="contact.html">Contact</a></li>
+        <li class="nav-item"><a data-nav class="nav-link" href="login.html">Login</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<header class="text-center py-5" style="background: radial-gradient(circle at center, #2a2d35 0%, #0f1115 100%);">
+  <div class="container">
+    <h1 class="display-4 fw-bold text-white mb-2">CafeTales Menu</h1>
+    <p class="text-muted lead">Handcrafted with passion.</p>
+  </div>
+</header>
+
+<div class="filter-wrapper">
+  <div class="container"><div class="filter-scroll" id="category-filters"></div></div>
+</div>
+
+<div class="container pb-5" style="min-height:50vh;">
+  <div id="menu-container" class="row g-4">
+      <div class="col-12 text-center text-white py-5"><div class="spinner-border text-warning"></div><div class="mt-2">Loading...</div></div>
+  </div>
+</div>
+
+<div id="cart-floating-bar">
+    <div class="fw-bold text-dark fs-6"><span id="float-qty">0</span> Items | ₹<span id="float-total">0</span></div>
+    <a href="cart.html" class="btn btn-dark rounded-pill fw-bold btn-sm">View Cart ></a>
+</div>
+
+<footer class="footer mt-auto py-4 border-top border-secondary">
+  <div class="container text-center text-muted">© <span id="year"></span> CafeTales</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="global.js"></script>
+
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+
+let allMenuItems = [];
+let userCart = [];
+const currentUser = JSON.parse(localStorage.getItem("cafetales_session_v3"));
+
+// 1. INIT PAGE
+async function init() {
+    await loadMenu();
+    if(currentUser) {
+        await loadCart();
+    } else {
+        renderMenu(allMenuItems);
+    }
+}
+
+// 2. LOAD MENU
+async function loadMenu() {
+    try {
+        const res = await fetch("api.php?action=get_menu");
+        allMenuItems = await res.json();
+        
+        // Categories
+        const cats = ["All", ...new Set(allMenuItems.map(i => i.category_name || "Special"))];
+        const filterBox = document.getElementById("category-filters");
+        
+        cats.forEach(c => {
+            const btn = document.createElement("button");
+            btn.className = `filter-btn ${c === 'All' ? 'active' : ''}`;
+            btn.innerText = c === 'All' ? 'All Items' : c;
+            btn.onclick = () => filterMenu(c, btn);
+            filterBox.appendChild(btn);
+        });
+    } catch(e) { console.error("Menu Load Failed", e); }
+}
+
+// 3. LOAD CART
+async function loadCart() {
+    if(!currentUser) return;
+    try {
+        const fd = new FormData();
+        fd.append("action", "get_cart");
+        fd.append("user_id", currentUser.id);
+        const res = await fetch("api.php", { method: "POST", body: fd });
+        userCart = await res.json();
+        
+        renderMenu(allMenuItems);
+        updateFloatingUI();
+        if(window.updateGlobalCartCount) window.updateGlobalCartCount(currentUser.id);
+    } catch(e) { console.error("Cart Load Failed", e); }
+}
+
+// 4. RENDER MENU
+function renderMenu(items) {
+    const container = document.getElementById("menu-container");
+    container.innerHTML = "";
+
+    if(!items || items.length === 0) {
+        container.innerHTML = `<div class="text-center text-muted w-100 py-5">No items found.</div>`;
+        return;
+    }
+
+    items.forEach(item => {
+        const img = (item.image && item.image !== 'default.jpg') ? `uploads/${item.image}` : 'https://via.placeholder.com/300';
+        
+        // Check Cart Qty
+        const cartItem = userCart.find(c => c.id == item.id);
+        const qty = cartItem ? parseInt(cartItem.qty) : 0;
+
+        // Button Logic
+        let btnHTML = "";
+        if (!currentUser) {
+            btnHTML = `<div class="btn-add-container" onclick="alert('Please Login First!'); window.location.href='login.html'">
+                         <div class="btn-add-initial">ADD</div>
+                       </div>`;
+        } else if (qty === 0) {
+            btnHTML = `<div class="btn-add-container" onclick="modifyCart(${item.id}, 1)">
+                         <div class="btn-add-initial">ADD</div>
+                       </div>`;
+        } else {
+            btnHTML = `<div class="btn-add-container">
+                         <div class="btn-counter">
+                           <button onclick="modifyCart(${item.id}, -1)">-</button>
+                           <span>${qty}</span>
+                           <button onclick="modifyCart(${item.id}, 1)">+</button>
+                         </div>
+                       </div>`;
+        }
+
+        container.innerHTML += `
+            <div class="col-lg-4 col-md-6">
+                <div class="menu-card">
+                    <div class="img-wrapper"><img src="${img}" alt="${item.name}"></div>
+                    <div class="card-content">
+                        <div class="text-muted small text-uppercase">${item.category_name || 'Special'}</div>
+                        <div class="item-title">${item.name}</div>
+                        <div class="item-price">₹${item.price}</div>
+                    </div>
+                    ${btnHTML}
+                </div>
+            </div>
+        `;
+    });
+}
+
+// 5. MODIFY CART (Renamed to match HTML)
+async function modifyCart(itemId, change) {
+    if(!currentUser) return;
+
+    // Optimistic Update (Immediate UI Change)
+    let item = userCart.find(c => c.id == itemId);
+    if(item) {
+        item.qty = parseInt(item.qty) + change;
+        if(item.qty <= 0) userCart = userCart.filter(c => c.id != itemId);
+    } else {
+        userCart.push({ id: itemId, qty: 1 });
+    }
+    
+    renderMenu(allMenuItems);
+    updateFloatingUI();
+
+    // Database Sync
+    const fd = new FormData();
+    fd.append("action", "update_cart");
+    fd.append("user_id", currentUser.id);
+    fd.append("item_id", itemId);
+    fd.append("change", change);
+
+    try {
+        await fetch("api.php", { method: "POST", body: fd });
+        await loadCart(); // Refresh to be safe
+    } catch(e) {
+        console.error("Sync Error", e);
+        alert("Could not save to cart. Check console.");
+    }
+}
+
+// 6. FLOATING UI
+function updateFloatingUI() {
+    const bar = document.getElementById("cart-floating-bar");
+    const totalQty = userCart.reduce((sum, i) => sum + parseInt(i.qty), 0);
+    const totalPrice = userCart.reduce((sum, i) => sum + (parseInt(i.qty) * parseFloat(i.price || 0)), 0);
+
+    if (totalQty > 0) {
+        bar.style.display = "flex";
+        document.getElementById("float-qty").innerText = totalQty;
+        document.getElementById("float-total").innerText = totalPrice;
+    } else {
+        bar.style.display = "none";
+    }
+}
+
+// Filter
+function filterMenu(cat, btn) {
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    if(cat === 'All') renderMenu(allMenuItems);
+    else renderMenu(allMenuItems.filter(i => (i.category_name||'Special') === cat));
+}
+
+init();
+</script>
+</body>
+</html>

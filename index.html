@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CafeTales — Home</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Your global styles -->
+  <link rel="stylesheet" href="global.css">
+
+  <!-- Small extra CSS ONLY for the hero carousel background -->
+  <style>
+    /* Hero carousel background layer */
+    .hero {
+      min-height: 78vh;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    .hero .carousel,
+    .hero .carousel-inner,
+    .hero .carousel-item {
+      height: 78vh;
+      min-height: 520px;
+    }
+
+    .hero-slide-bg{
+      position:absolute;
+      inset:0;
+      background-size: cover;
+      background-position: center;
+      transform: scale(1.02);
+    }
+
+    /* same hero content style but adapted for carousel */
+    .hero-content{
+      position: relative;
+      z-index: 2;
+      width: min(1100px, 92vw);
+      margin: 0 auto;
+      padding: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    /* Optional: nicer control icons */
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon{
+      filter: drop-shadow(0 8px 18px rgba(0,0,0,.55));
+    }
+
+    @media (max-width: 992px){
+      .hero .carousel,
+      .hero .carousel-inner,
+      .hero .carousel-item {
+        height: 70vh;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center gap-2 fw-bold" href="index.html">
+      <img
+        src="https://cdn-icons-png.flaticon.com/512/924/924514.png"
+        alt="CafeTales Logo"
+        class="navbar-logo"
+      >
+      <span>CafeTales</span>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="nav" class="collapse navbar-collapse">
+      <ul class="navbar-nav ms-auto gap-2">
+        <li class="nav-item"><a data-nav class="nav-link" href="index.html">Home</a></li>
+        <li class="nav-item"><a data-nav class="nav-link" href="menu.html">Menu</a></li>
+        <li class="nav-item"><a data-nav class="nav-link" href="reservation.html">Reserve</a></li>
+        <li class="nav-item"><a data-nav class="nav-link" href="offers.html">Offers</a></li>
+        <li class="nav-item"><a data-nav class="nav-link" href="gallery.html">Gallery</a></li>
+        <li class="nav-item"><a data-nav class="nav-link" href="events.html">Events</a></li>
+        <li class="nav-item"><a data-nav class="nav-link" href="about.html">About</a></li>
+        <li class="nav-item"><a data-nav class="nav-link" href="contact.html">Contact</a></li>
+        <li class="nav-item"><a data-nav class="nav-link" href="login.html">Login</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<header class="hero hero-slider">
+  <div class="hero-wrap">
+
+    <!-- Background slides (JS injects 5 backgrounds here) -->
+    <div class="bg-stack" id="bgStack"></div>
+
+    <!-- Foreground UI -->
+    <div class="hero-ui container-narrow">
+
+      <!-- LEFT SIDE -->
+      <div class="hero-top">
+        <span class="badge badge-soft rounded-pill px-3 py-2" id="slideTag">
+          Cozy coffee • Fresh bakes • Calm vibes
+        </span>
+
+        <div class="hero-main">
+          <h1 class="hero-title" id="slideTitle">Where every sip tells a story.</h1>
+
+          <p class="hero-subtitle" id="slideSubtitle">
+            CafeTales is your modern café experience—premium coffee, handcrafted desserts, and a warm ambience.
+          </p>
+
+          <div class="hero-actions">
+            <a class="ct-btn" href="reservation.html" id="slideBtn1">Reserve a Table</a>
+            <a class="ct-btn" href="menu.html" id="slideBtn2">Explore Menu</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT SIDE (3 stacked cards like video) -->
+      <div class="hero-right">
+        <div class="thumbs" id="thumbs"></div>
+
+        <div class="hero-nav">
+          <button class="nav-btn" id="prevBtn" type="button" aria-label="Previous slide">‹</button>
+          <button class="nav-btn" id="nextBtn" type="button" aria-label="Next slide">›</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom dots + counter -->
+    <div class="hero-bottom">
+      <div class="dots" id="dots"></div>
+      <div class="counter"><span id="cur">01</span> / <span id="total">05</span></div>
+    </div>
+
+  </div>
+</header>
+
+
+<!-- Featured Picks -->
+<section class="section">
+  <div class="container-narrow">
+    <h2 class="h3">Featured Picks</h2>
+    <p class="small-muted">Popular items curated for you.</p>
+
+    <div class="grid-3 mt-3">
+      <div class="glass overflow-hidden card-hover">
+        <img class="img-cover" src="https://images.unsplash.com/photo-1512568400610-62da28bc8a13?auto=format&fit=crop&w=1200&q=70" alt="Latte">
+        <div class="p-3">
+          <div class="fw-bold">Caramel Latte</div>
+          <div class="small-muted">Smooth espresso + caramel notes</div>
+        </div>
+      </div>
+
+      <div class="glass overflow-hidden card-hover">
+        <img class="img-cover" src="https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=1200&q=70" alt="Dessert">
+        <div class="p-3">
+          <div class="fw-bold">cold drinks</div>
+          <div class="small-muted">Warm, gooey, unforgettable</div>
+        </div>
+      </div>
+
+      <div class="glass overflow-hidden card-hover">
+        <img class="img-cover" src="data:image/jpeg;base64,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" alt="Cold brew">
+        <div class="p-3">
+          <div class="fw-bold">Cold Brew</div>
+          <div class="small-muted">Bold, chilled, refreshing</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ below Featured Picks -->
+<section class="section pt-0">
+  <div class="container-narrow">
+    <h2 class="h3">FAQ</h2>
+    <p class="small-muted">Quick answers before you visit.</p>
+
+    <div class="accordion mt-3" id="homeFaqAcc">
+      <div class="accordion-item bg-dark text-white border-secondary">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed bg-dark text-white"
+                  type="button" data-bs-toggle="collapse" data-bs-target="#hf1">
+            How does table reservation work?
+          </button>
+        </h2>
+        <div id="hf1" class="accordion-collapse collapse" data-bs-parent="#homeFaqAcc">
+          <div class="accordion-body">
+            Go to Reserve page, fill the form, and it saves your booking in Database.
+            You can cancel anytime from the reservation list.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item bg-dark text-white border-secondary">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed bg-dark text-white"
+                  type="button" data-bs-toggle="collapse" data-bs-target="#hf2">
+            Do you offer outdoor seating?
+          </button>
+        </h2>
+        <div id="hf2" class="accordion-collapse collapse" data-bs-parent="#homeFaqAcc">
+          <div class="accordion-body">
+            Yes. While reserving, choose Indoor / Outdoor / Window seating.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item bg-dark text-white border-secondary">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed bg-dark text-white"
+                  type="button" data-bs-toggle="collapse" data-bs-target="#hf3">
+            Can I host events at CafeTales?
+          </button>
+        </h2>
+        <div id="hf3" class="accordion-collapse collapse" data-bs-parent="#homeFaqAcc">
+          <div class="accordion-body">
+            Yes. Check the Events page and contact us for private bookings.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-3 d-flex gap-2 flex-wrap">
+      <a class="ct-btn" href="reservation.html">Reserve a Table</a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container-narrow d-flex flex-wrap justify-content-between gap-2">
+    <div>© <span id="year"></span> CafeTales</div>
+    <div class="small-muted">Made with HTML • CSS • JS • Bootstrap</div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+
+<!-- Bootstrap JS (required for carousel + navbar) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Your global script -->
+<script src="global.js"></script>
+<script src="hero-slider.js"></script>
+
+</body>
+</html>
